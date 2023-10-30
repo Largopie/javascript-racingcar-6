@@ -3,17 +3,19 @@ import { Console } from '@woowacourse/mission-utils';
 export default class View {
   constructor(controller) {
     this.controller = controller;
-    this.CAR_NAME_INPUT_MESSAGE = '경주할 자동차 이름을 입력하세요.(이름은 쉼표(,) 기준으로 구분\n';
+    this.CAR_NAME_INPUT_MESSAGE =
+      '경주할 자동차 이름을 입력하세요.(이름은 쉼표(,) 기준으로 구분\n';
     this.CAR_NAME_LENGTH_ERROR = '[ERROR] 자동차 이름은 5자 이하만 가능합니다.';
     this.TRY_COUNT_INPUT_MESSAGE = '시도할 횟수는 몇 회인가요?\n';
     this.RUN_RESULT_MESSAGE = '실행 결과';
     this.TRY_INPUT_ERROR = '[ERROR] 숫자가 잘못된 형식입니다.';
+    this.WINNER_MESSAGE = '최종 우승자 : ';
   }
 
   async getCarNameInput() {
     const input = await Console.readLineAsync(this.CAR_NAME_INPUT_MESSAGE);
     const inputToArray = input.split(',');
-    console.log(inputToArray);
+
     await this.controller.isCarNameInputValid(inputToArray);
   }
 
@@ -35,15 +37,16 @@ export default class View {
     Console.print(this.RUN_RESULT_MESSAGE);
   }
 
-  printSingleTryResult(carList) {
-    for (let car of carList) {
-      Console.print(car.getName() + ' : ' + '-'.repeat(car.getMove()));
-    }
+  static printSingleTryResult(carList) {
+    carList.forEach((car) => {
+      Console.print(`${car.getName()} : ${'-'.repeat(car.getMove())}`);
+    });
     Console.print('');
   }
 
   printWinner(carList) {
-    console.log();
-    Console.print('최종 우승자 : ' + carList.map((car) => car.getName()).join(', '));
+    Console.print(
+      this.WINNER_MESSAGE + carList.map((car) => car.getName()).join(', '),
+    );
   }
 }

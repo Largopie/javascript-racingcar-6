@@ -10,7 +10,8 @@ export default class Controller {
   }
 
   async isCarNameInputValid(carNameList) {
-    const carNameInputValidation = await this.validation.getCarNameInputValidation(carNameList);
+    const carNameInputValidation =
+      await this.validation.getCarNameInputValidation(carNameList);
     if (!carNameInputValidation) {
       await this.view.carNameInputError();
     }
@@ -20,13 +21,14 @@ export default class Controller {
   }
 
   createCar(carNameList) {
-    for (let carName of carNameList) {
+    carNameList.forEach((carName) => {
       this.carList.push(new Car(carName));
-    }
+    });
   }
 
   async isTryInputValid(tryInput) {
-    const tryInputValidation = await this.validation.getTryInputValidation(tryInput);
+    const tryInputValidation =
+      await this.validation.getTryInputValidation(tryInput);
     if (!tryInputValidation) {
       await this.view.tryInputError();
     }
@@ -34,19 +36,25 @@ export default class Controller {
     this.moveCars(tryInput);
   }
 
-  moveCars(tryInput) {
-    const list = this.carList;
-    let max = 0;
-    this.view.printRunResult();
-    for (let i = 0; i < tryInput; i++) {
-      list.map((car) => {
-        car.tryMove();
-        if (max < car.getMove()) max = car.getMove();
-      });
-      this.view.printSingleTryResult(list);
-    }
+  updateMaxScore() {
+    let maxScore = 0;
+    this.carList.forEach((car) => {
+      car.tryMove();
+      maxScore = Math.max(maxScore, car.getMove());
+    });
 
-    this.checkResult(max);
+    return maxScore;
+  }
+
+  moveCars(tryInput) {
+    let maxScore = 0;
+    this.view.printRunResult();
+
+    for (let i = 0; i < tryInput; i += 1) {
+      maxScore = this.updateMaxScore();
+      View.printSingleTryResult(this.carList);
+    }
+    this.checkResult(maxScore);
   }
 
   checkResult(max) {
@@ -55,7 +63,7 @@ export default class Controller {
     this.view.printWinner(filterCarList);
   }
 
-  async init() {
+  async gameStart() {
     await this.view.getCarNameInput();
   }
 }

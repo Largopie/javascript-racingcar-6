@@ -5,12 +5,9 @@ export default class Validation {
   }
 
   async validateCarNameInput(carNameList) {
-    for (let carName of carNameList) {
-      if (carName.length > 5) {
-        this.carNameInputValidation = false;
-        break;
-      }
-    }
+    this.carNameInputValidation = carNameList.every(
+      (carNAme) => carNAme.length < 5,
+    );
   }
 
   async getCarNameInputValidation(carNameList) {
@@ -19,7 +16,7 @@ export default class Validation {
   }
 
   async validateTryInput(tryInput) {
-    if (isNaN(tryInput)) {
+    if (Number.isNaN(tryInput)) {
       this.tryInputValidation = false;
     }
   }
